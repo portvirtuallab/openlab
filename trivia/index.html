@@ -17,7 +17,7 @@
   <header class="header">
     <div class="header-badge">🌍 Escola Europea · PVL.ONE</div>
     <div class="logo">OPEN LAB</div>
-    <div class="header-sub">Trivia Challenge — Next Generation Edition</div>
+    <div class="header-sub">Test your knowledge of ports, logistics and intermodal transport</div>
   </header>
 
   <div class="container">
@@ -39,10 +39,6 @@
           <div class="form-group">
             <label class="form-label" for="name">Full Name</label>
             <input type="text" id="name" class="form-input" placeholder="e.g. Maria García" autocomplete="name" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="email">Email Address</label>
-            <input type="email" id="email" class="form-input" placeholder="your@email.com" autocomplete="email" required>
           </div>
           <div class="form-group">
             <label class="form-label" for="institute">Your Institute</label>
@@ -82,15 +78,13 @@
         </form>
 
         <div class="instructions">
-          <div class="instructions-title">📋 Rules &amp; Fair Play</div>
+          <div class="instructions-title">How it works</div>
           <ul>
-            <li>Only <strong>one participation per email</strong> will be accepted.</li>
-            <li>All submissions are <strong>cross-checked with official student lists</strong>.</li>
-            <li>The winning institute is based on the <strong>overall performance of all its students</strong>.</li>
-            <li>An award will also go to the <strong>best individual score</strong>.</li>
-            <li>Each student may participate in <strong>one trivia per month</strong>.</li>
-            <li><strong>Duplicate entries or identity fraud</strong> result in disqualification.</li>
-            <li>"Other" entries will be <strong>manually verified</strong> for fairness.</li>
+            <li>You have <strong>30 seconds per question</strong>. Answer with the mouse or with keys <strong>1–4</strong>.</li>
+            <li>One point per correct answer. Ties are broken by <strong>total time</strong>.</li>
+            <li>Your scores are saved <strong>on this device only</strong>, in this browser.</li>
+            <li>Nothing is sent anywhere: <strong>no account, no email, no tracking</strong>.</li>
+            <li>Play as many times as you like — every round is kept in your history.</li>
           </ul>
         </div>
       </div>
@@ -100,7 +94,7 @@
     <section id="trivia" class="hidden" role="tabpanel" aria-labelledby="tab-trivia">
       <div class="card">
         <div class="question-meta">
-          <span class="question-pill" id="questionNumber">Question 1 of 10</span>
+          <span class="question-pill" id="questionNumber">Question 1</span>
           <div class="timer" id="timer" aria-live="polite">
             ⏱ <span id="timerText">30s</span>
           </div>
@@ -128,8 +122,8 @@
       </div>
 
       <div class="card">
-        <div class="card-title">🏆 Leaderboard</div>
-        <div class="card-sub">Top performers ranked by score and speed</div>
+        <div class="card-title">Your scores</div>
+        <div class="card-sub">Saved on this device · ranked by score, then speed</div>
 
         <div id="leaderboard">
           <div class="loading">
@@ -139,11 +133,10 @@
         </div>
 
         <div class="admin-section">
-          <div class="admin-title">🔐 Admin Access</div>
+          <div class="admin-title">Reset</div>
           <div class="admin-row">
-            <label class="form-label hidden" for="adminPassword">Admin password</label>
-            <input type="password" id="adminPassword" class="form-input" placeholder="Admin password" autocomplete="current-password" style="flex: 1; margin-bottom: 0;">
-            <button class="btn btn-danger" id="clearLeaderboard">Clear All</button>
+            <p class="admin-note">Deletes the scores stored in this browser. Other devices are not affected.</p>
+            <button class="btn btn-danger" id="clearLeaderboard">Clear my scores</button>
           </div>
         </div>
       </div>
@@ -151,7 +144,7 @@
   </div>
 
   <script src="js/config.js"></script>
-  <script src="js/api.js"></script>
+  <script src="js/store.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

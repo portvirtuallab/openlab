@@ -1,0 +1,42 @@
+[
+  {
+    "question": "Which Incoterm makes the seller responsible for paying import duties in the buyer’s country?",
+    "options": ["FOB – Free On Board", "CIF – Cost, Insurance and Freight", "EXW – Ex Works", "DDP – Delivered Duty Paid"],
+    "correct": "DDP – Delivered Duty Paid"
+  },
+  {
+    "question": "Which document in maritime transport serves as both a receipt of goods and a document of title?",
+    "options": ["Commercial Invoice", "Packing List", "Bill of Lading", "Certificate of Origin"],
+    "correct": "Bill of Lading"
+  },
+  {
+    "question": "What does “Last Mile Delivery” refer to in logistics?",
+    "options": ["Transport of goods between ports", "Final step of delivery from hub to customer", "First part of international shipping", "Return of defective goods"],
+    "correct": "Final step of delivery from hub to customer"
+  },
+  {
+    "question": "In container shipping, what does LCL stand for?",
+    "options": ["Less than Container Load", "Low Cargo Level", "Limited Container Logistics", "Loading Control List"],
+    "correct": "Less than Container Load"
+  },
+  {
+    "question": "What is the main purpose of a Letter of Credit in international trade?",
+    "options": ["Provide insurance against damage", "Guarantee payment from buyer’s bank to seller", "Serve as a packing authorization", "Calculate customs tariffs"],
+    "correct": "Guarantee payment from buyer’s bank to seller"
+  },
+  {
+    "question": "Which of the following is an advantage of intermodal transport?",
+    "options": ["Higher CO₂ emissions", "Lower cargo security", "Cost efficiency and sustainability", "Longer transit times"],
+    "correct": "Cost efficiency and sustainability"
+  },
+  {
+    "question": "Which organization sets the Incoterms rules?",
+    "options": ["United Nations", "International Chamber of Commerce (ICC)", "World Trade Organization (WTO)", "European Commission"],
+    "correct": "International Chamber of Commerce (ICC)"
+  },
+  {
+    "question": "In supply chain management, what does “resilience” mean?",
+    "options": ["Ability to reduce shipping costs", "Capacity to anticipate, respond, and recover from disruptions", "Focus on increasing delivery speed only", "Total elimination of risks"],
+    "correct": "Capacity to anticipate, respond, and recover from disruptions"
+  }
+]

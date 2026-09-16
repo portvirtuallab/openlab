@@ -7,7 +7,7 @@
   'use strict';
 
   const CONFIG = window.OPENLAB_CONFIG;
-  const API = window.OpenLabAPI;
+  const STORE = window.OpenLabStore;
   const LABELS = ['A', 'B', 'C', 'D'];
 
   let questions = [];
@@ -73,26 +73,14 @@
 
   // ===== QUESTIONS =====
   async function fetchQuestions() {
-    showNotification('Loading questions…', 'info');
     try {
-      const data = await API.getQuestions();
-      if (!Array.isArray(data) || data.length === 0) {
-        throw new Error('No questions received');
-      }
-
-      let valid = data.filter(function (q) {
-        return q && q.question && Array.isArray(q.options) && q.options.length && q.correct;
-      });
-
-      if (!valid.length) throw new Error('No valid questions found');
-
-      valid = shuffleArray(valid);
+      const data = await STORE.getQuestions();
+      const shuffled = shuffleArray(data);
 
       const limit = CONFIG.QUESTIONS_PER_ROUND;
-      questions = (limit && limit > 0) ? valid.slice(0, limit) : valid;
+      questions = (limit && limit > 0) ? shuffled.slice(0, limit) : shuffled;
 
       gameState.questionsLoaded = true;
-      showNotification(questions.length + ' questions loaded', 'success');
       return true;
     } catch (err) {
       showNotification(err.message || 'Could not load questions.', 'error');
@@ -125,7 +113,7 @@
   }
 
   function handleTimeUp() {
-    showNotification("⏰ Time's up!", 'warning');
+    showNotification('Time is up!', 'warning');
     userAnswers.push({ question: currentQuestion, selectedAnswer: null, correct: false });
     setTimeout(nextQuestion, 800);
   }
@@ -183,9 +171,9 @@
 
     if (isCorrect) {
       score++;
-      showNotification('✅ Correct!', 'success');
+      showNotification('Correct!', 'success');
     } else {
-      showNotification('❌ Answer: ' + q.correct, 'error');
+      showNotification('Answer: ' + q.correct, 'error');
     }
 
     $('currentScore').textContent = score;
@@ -197,7 +185,7 @@
     displayQuestion();
   }
 
-  async function endGame() {
+  function endGame() {
     isGameActive = false;
     clearInterval(timerInterval);
 
@@ -210,20 +198,20 @@
     $('tab-results').click();
 
     if (gameState.isRegistered && gameState.currentUser) {
-      try {
-        await API.saveScore({
-          name: gameState.currentUser.name,
-          email: gameState.currentUser.email,
-          institute: gameState.currentUser.institute,
-          score: score,
-          totalQuestions: questions.length,
-          timeTaken: timeTaken
-        });
-        showNotification('Score saved to leaderboard!', 'success');
-        await loadLeaderboard();
-      } catch (err) {
-        showNotification(err.message || 'Could not save score.', 'error');
+      const result = STORE.saveScore({
+        name: gameState.currentUser.name,
+        institute: gameState.currentUser.institute,
+        score: score,
+        totalQuestions: questions.length,
+        timeTaken: timeTaken
+      });
+
+      if (result.saved) {
+        showNotification('Score saved on this device', 'success');
+      } else {
+        showNotification('Score could not be saved: storage is blocked in this browser.', 'warning');
       }
+      loadLeaderboard();
     }
   }
 
@@ -244,39 +232,27 @@
   }
 
   // ===== LEADERBOARD =====
-  async function loadLeaderboard() {
-    $('leaderboard').innerHTML = '<div class="loading"><div class="spinner"></div>Loading scores…</div>';
-    try {
-      const data = await API.getLeaderboard();
-      displayLeaderboard(Array.isArray(data) ? data : []);
-    } catch (err) {
-      $('leaderboard').innerHTML =
-        '<div class="empty-state"><div class="empty-state-icon">⚠️</div><div>' +
-        escapeHtml(err.message || 'Could not load the leaderboard.') +
-        '</div></div>';
-    }
+  function loadLeaderboard() {
+    displayLeaderboard(STORE.getLeaderboard());
   }
 
   function displayLeaderboard(data) {
     const container = $('leaderboard');
 
     if (!data.length) {
-      container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏁</div><div>No scores yet — be the first!</div></div>';
+      container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏁</div>' +
+        '<div>No scores yet on this device — play a round to start your record.</div></div>';
       return;
     }
 
-    const sorted = data.slice().sort(function (a, b) {
-      return b.score - a.score || a.timeTaken - b.timeTaken;
-    });
-
-    const rows = sorted.map(function (entry, i) {
+    const rows = data.map(function (entry, i) {
       const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'rank-other';
       const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
       return '<div class="leaderboard-row ' + (i < 3 ? 'top-' + (i + 1) : '') + '">' +
                '<div><span class="rank-badge ' + rankClass + '">' + medal + '</span></div>' +
                '<div>' +
                  '<div class="lb-name">' + escapeHtml(entry.name || 'Anonymous') + '</div>' +
-                 '<div class="lb-date">' + formatDate(entry.date) + '</div>' +
+                 '<div class="lb-date">' + formatDate(entry.date) + ' · ' + formatTime(entry.timeTaken || 0) + '</div>' +
                '</div>' +
                '<div class="lb-institute">' + escapeHtml(entry.institute || '—') + '</div>' +
                '<div class="lb-score">' + entry.score + '/' + (entry.totalQuestions || '?') + '</div>' +
@@ -315,7 +291,7 @@
     if (section === 'trivia') {
       await startTrivia();
     } else if (section === 'results') {
-      await loadLeaderboard();
+      loadLeaderboard();
     } else {
       clearInterval(timerInterval);
       isGameActive = false;
@@ -324,10 +300,12 @@
 
   // ===== INIT =====
   function init() {
-    if (!API.isConfigured()) {
+    // Sin localStorage el juego funciona, pero las puntuaciones no sobreviven
+    // al cerrar la pestaña. Mejor avisar que fallar en silencio.
+    if (!STORE.isPersistent()) {
       const warn = $('configWarning');
-      warn.innerHTML = 'Backend not configured. Open <code>js/config.js</code> and set <code>API_URL</code> ' +
-                       'to the <code>/exec</code> URL of your Apps Script Web App.';
+      warn.textContent = 'This browser is blocking local storage (private mode or blocked cookies), ' +
+                         'so your scores will not be kept after you close the page.';
       warn.classList.remove('hidden');
     }
 
@@ -351,48 +329,33 @@
       e.preventDefault();
 
       const name = $('name').value.trim();
-      const email = $('email').value.trim();
       const institute = $('institute').value;
       const other = $('otherInstitute').value.trim();
-      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
       if (!name) { showNotification('Enter your full name', 'error'); return; }
-      if (!emailOk) { showNotification('Enter a valid email', 'error'); return; }
       if (!institute) { showNotification('Select your institute', 'error'); return; }
       if (institute === 'Other' && !other) { showNotification('Enter your institute name', 'error'); return; }
 
       gameState.currentUser = {
         name: name,
-        email: email,
         institute: institute === 'Other' ? other : institute
       };
       gameState.isRegistered = true;
 
-      showNotification('Welcome, ' + name + '! 🚀', 'success');
+      showNotification('Welcome, ' + name + '!', 'success');
       $('tab-trivia').click();
     });
 
-    $('clearLeaderboard').addEventListener('click', async function () {
-      const input = $('adminPassword');
-      const password = input.value.trim();
-
-      if (!password) { showNotification('Enter admin password', 'warning'); return; }
-      if (!confirm('Clear ALL leaderboard scores? This cannot be undone.')) return;
-
-      const btn = this;
-      btn.disabled = true;
-      try {
-        // La contraseña se valida en el servidor, nunca en el cliente.
-        await API.clearLeaderboard(password);
-        showNotification('Leaderboard cleared', 'success');
-        input.value = '';
-        await loadLeaderboard();
-      } catch (err) {
-        showNotification(err.message || 'Could not clear leaderboard', 'error');
-        input.value = '';
-      } finally {
-        btn.disabled = false;
+    $('clearLeaderboard').addEventListener('click', function () {
+      if (!STORE.getLeaderboard().length) {
+        showNotification('There is nothing to clear', 'info');
+        return;
       }
+      if (!confirm('Clear all scores saved on this device? This cannot be undone.')) return;
+
+      STORE.clearLeaderboard();
+      showNotification('Scores cleared', 'success');
+      loadLeaderboard();
     });
 
     document.addEventListener('keydown', function (e) {
