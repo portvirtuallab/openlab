@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OPEN LAB — Trivia Challenge</title>
+  <meta name="description" content="OPEN LAB Trivia Challenge — Escola Europea · PVL.ONE">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-badge">🌍 Escola Europea · PVL.ONE</div>
+    <div class="logo">OPEN LAB</div>
+    <div class="header-sub">Trivia Challenge — Next Generation Edition</div>
+  </header>
+
+  <div class="container">
+    <div id="configWarning" class="config-warning hidden"></div>
+
+    <nav class="nav-tabs" role="tablist">
+      <button class="nav-tab active" role="tab" aria-selected="true" aria-controls="registration" id="tab-registration">① Register</button>
+      <button class="nav-tab" role="tab" aria-selected="false" aria-controls="trivia" id="tab-trivia">② Trivia</button>
+      <button class="nav-tab" role="tab" aria-selected="false" aria-controls="results" id="tab-results">③ Results</button>
+    </nav>
+
+    <!-- REGISTRATION -->
+    <section id="registration" role="tabpanel" aria-labelledby="tab-registration">
+      <div class="card">
+        <div class="card-title">Register to Play</div>
+        <div class="card-sub">Fill in your details to begin the challenge</div>
+
+        <form id="registrationForm">
+          <div class="form-group">
+            <label class="form-label" for="name">Full Name</label>
+            <input type="text" id="name" class="form-input" placeholder="e.g. Maria García" autocomplete="name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <input type="email" id="email" class="form-input" placeholder="your@email.com" autocomplete="email" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="institute">Your Institute</label>
+            <select id="institute" class="form-input" required>
+              <option value="">— Select your institute —</option>
+              <option value="Centre d'Estudis Prat (Prat Educació)">Centre d'Estudis Prat (Prat Educació)</option>
+              <option value="IES López Vicuña">IES López Vicuña</option>
+              <option value="Institut Poblenou ECAIB">Institut Poblenou ECAIB</option>
+              <option value="FP Santurtzi LH – CIFP San Jorge de Santurzi">FP Santurtzi LH – CIFP San Jorge de Santurzi</option>
+              <option value="IFTL – Institut de Formation aux Métiers du Transport et de la Logistique">IFTL – Institut Formation Métiers Transport &amp; Logistique</option>
+              <option value="Centre d'Estudis Politècnics">Centre d'Estudis Politècnics</option>
+              <option value="GMLS – Global Maritime Legal Solutions">GMLS – Global Maritime Legal Solutions</option>
+              <option value="Saudi Logistics Academy">Saudi Logistics Academy</option>
+              <option value="IES Los Viveros">IES Los Viveros</option>
+              <option value="Constanta Maritime University">Constanta Maritime University</option>
+              <option value="Bosc de la Coma Institute">Bosc de la Coma Institute</option>
+              <option value="eCAT Institut Lluïsa Cura">eCAT Institut Lluïsa Cura</option>
+              <option value="Escola Treball Lleida">Escola Treball Lleida</option>
+              <option value="ILB – Institut de Logística de Barcelona">ILB – Institut de Logística de Barcelona</option>
+              <option value="CFMPL - Training Center Trades Portuaires And La Logistique">CFMPL - Training Center Portuaire &amp; Logistique</option>
+              <option value="Escola FUAB Formació">Escola FUAB Formació</option>
+              <option value="ITS Academy Fondazione G. Caboto">ITS Academy Fondazione G. Caboto</option>
+              <option value="POLITEHNICA Bucharest">POLITEHNICA Bucharest</option>
+              <option value="Other">Other…</option>
+            </select>
+          </div>
+          <div id="otherInstituteInput" class="form-group hidden">
+            <label class="form-label" for="otherInstitute">Institute Name</label>
+            <input type="text" id="otherInstitute" class="form-input" placeholder="Enter your institute name">
+          </div>
+          <button type="submit" class="btn btn-primary" id="startBtn">Start Challenge →</button>
+        </form>
+
+        <div class="instructions">
+          <div class="instructions-title">📋 Rules &amp; Fair Play</div>
+          <ul>
+            <li>Only <strong>one participation per email</strong> will be accepted.</li>
+            <li>All submissions are <strong>cross-checked with official student lists</strong>.</li>
+            <li>The winning institute is based on the <strong>overall performance of all its students</strong>.</li>
+            <li>An award will also go to the <strong>best individual score</strong>.</li>
+            <li>Each student may participate in <strong>one trivia per month</strong>.</li>
+            <li><strong>Duplicate entries or identity fraud</strong> result in disqualification.</li>
+            <li>"Other" entries will be <strong>manually verified</strong> for fairness.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRIVIA -->
+    <section id="trivia" class="hidden" role="tabpanel" aria-labelledby="tab-trivia">
+      <div class="card">
+        <div class="question-meta">
+          <span class="question-pill" id="questionNumber">Question 1 of 10</span>
+          <div class="timer" id="timer" aria-live="polite">
+            ⏱ <span id="timerText">30s</span>
+          </div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <div id="questionContainer" tabindex="0">
+          <div class="question-text" id="questionText"></div>
+          <div class="options" id="optionsContainer"></div>
+        </div>
+        <div class="score-bar">
+          <span class="score-label">Score</span>
+          <span class="score-value" id="currentScore">0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="results" class="hidden" role="tabpanel" aria-labelledby="tab-results">
+      <div id="finalScoreCard" class="final-score-card hidden">
+        <div class="final-score-label">🎉 Your Final Score</div>
+        <div class="final-score-number" id="finalScoreNumber">—</div>
+        <div class="final-score-time" id="finalScoreTime"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏆 Leaderboard</div>
+        <div class="card-sub">Top performers ranked by score and speed</div>
+
+        <div id="leaderboard">
+          <div class="loading">
+            <div class="spinner"></div>
+            Loading scores…
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <div class="admin-title">🔐 Admin Access</div>
+          <div class="admin-row">
+            <label class="form-label hidden" for="adminPassword">Admin password</label>
+            <input type="password" id="adminPassword" class="form-input" placeholder="Admin password" autocomplete="current-password" style="flex: 1; margin-bottom: 0;">
+            <button class="btn btn-danger" id="clearLeaderboard">Clear All</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
