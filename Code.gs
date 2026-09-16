@@ -25,8 +25,8 @@ const LEADERBOARD_SHEET = 'Leaderboard';
  */
 function setupProperties() {
   PropertiesService.getScriptProperties().setProperties({
-    SPREADSHEET_ID: 'PEGA_AQUI_EL_ID_DE_TU_HOJA',
-    ADMIN_PASSWORD: 'PEGA_AQUI_UNA_CONTRASENA_FUERTE'
+    SPREADSHEET_ID: '1kjjJLW86gpwToIwTdUjcsf_i9efIgvOkGRhCPj3bGVs',
+    ADMIN_PASSWORD: 'EscolaEuropea2026'
   });
   Logger.log('Propiedades guardadas. Borra los valores de esta función.');
 }
