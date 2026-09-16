@@ -12,7 +12,7 @@
 
 window.OPENLAB_CONFIG = {
   // URL del Web App desplegado (termina en /exec)
-  API_URL: 'https://script.google.com/macros/s/PEGA_AQUI_TU_ID_DE_DESPLIEGUE/exec',
+  API_URL: 'https://script.google.com/macros/s/AKfycbz5PqNFpwFDudHwmrC8nYSh6cCoFIEx_jDqYGGh0CfOdqs9swPD63DBo6a8dOF_Repb/exec',
 
   // Segundos por pregunta
   QUESTION_TIME: 30,
